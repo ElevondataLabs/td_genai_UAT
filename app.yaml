@@ -1,0 +1,12 @@
+service: td-genai-uat
+runtime: python39
+instance_class: F4
+entrypoint: gunicorn -t 0 -w 4 -k uvicorn.workers.UvicornWorker main:app 
+beta_settings:
+ cloud_sql_instances: tradeday:us-central1:genai-storage
+
+
+handlers:
+- url: /.*
+  script: main.app
+  
