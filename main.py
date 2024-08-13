@@ -39,11 +39,17 @@ app.add_middleware(
 def pre_process(message):
     if message.startswith("Bot:") and "Bot:" in message and "Customer:" in message:
         customer_messages = re.findall(r'Customer:\s(.*?)(?=\sBot:|\Z)', message)
-        val = customer_messages[0]
-        print("Preprocess",val)
-        return(val)
+        print("customer_messages: ", customer_messages)
+        
+        if len(customer_messages) > 1:
+            val = customer_messages[0] + " " + customer_messages[1]
+        else:
+            val = customer_messages[0]
+        
+        print("Preprocess", val)
+        return val
     else:
-        return(message)
+        return message
 
 def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
     print("inside connect_unix_socket")
@@ -222,10 +228,10 @@ def find_similar_conversations(convo, subject, data, ticket_data):
 
         for index, row in similar_emails.iterrows():
             print("inside 3rd for loop")
-            if row['similarity_score'] > 0.93:
-                print("Score: ",row['similarity_score'])
-                similar_conversations.append(f"{row['convo']} with a similarity score of {row['similarity_score']:.2f}")
-                similarity_scores.append(row['similarity_score'])
+            # if row['similarity_score'] > 0.93:
+            print("Score: ",row['similarity_score'])
+            similar_conversations.append(f"{row['convo']} with a similarity score of {row['similarity_score']:.2f}")
+            similarity_scores.append(row['similarity_score'])
 
     if similar_conversations:
         print("Found similar ticket")
